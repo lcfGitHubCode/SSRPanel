@@ -82,16 +82,16 @@ class PaymentController extends Controller
             $order->is_expire = 0;
             $order->pay_way = 2;
             $order->status = 0;
-            $order->save();
+            //$order->save();
 
             // 生成支付单
-            $yzy = new Yzy();
-            $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
-            if (isset($result['error_response'])) {
-                Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
+            // $yzy = new Yzy();
+            // $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
+            // if (isset($result['error_response'])) {
+            //     Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
 
-                throw new \Exception($result['error_response']['msg']);
-            }
+            //     throw new \Exception($result['error_response']['msg']);
+            // }
 
             $payment = new Payment();
             $payment->sn = $sn;
@@ -100,15 +100,40 @@ class PaymentController extends Controller
             $payment->order_sn = $orderSn;
             $payment->pay_way = 1;
             $payment->amount = $amount;
-            $payment->qr_id = $result['response']['qr_id'];
-            $payment->qr_url = $result['response']['qr_url'];
-            $payment->qr_code = $result['response']['qr_code'];
+            // $payment->qr_id = $result['response']['qr_id'];
+            // $payment->qr_url = $result['response']['qr_url'];
+            // $payment->qr_code = $result['response']['qr_code'];
             $payment->status = 0;
-            $payment->save();
+            //$payment->save();
 
-            DB::commit();
+            //DB::commit();
 
-            return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建支付单成功']);
+            // 从网页传入 price 
+            $price = $price;
+            // 从网页传入 type [1: 微信, 2: 支付宝]
+            $type = 1;
+            // 填写 api_user
+            $api_user = self::$config['youzan_client_id'];
+            // 填写 api_key 
+            $api_key = self::$config['youzan_client_secret'];
+            // 您系统内部生成的订单号, 每创建一个订单, 此订单号需要+1
+            $order_id = $order;
+            // 您自定义的用户信息, 方便在后台对账, 排查订单是由哪个用户发起的, 强烈建议加上
+            $order_info = $order->user_id;
+            // 用户支付成功之后, 跳转到的页面
+            $redirect = self::$config['kdt_id'];
+
+            // 签名 
+            $signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
+
+            $ret['api_user'] = $api_user;
+            $ret['price'] = $price;
+            $ret['type'] = $type;
+            $ret['redirect'] = $redirect;
+            $ret['order_id'] = $order_id;
+            $ret['order_info'] =$order_info;
+            $ret['signature'] = $signature;
+            return Response::json(['status' => 'success', 'data' => $ret, 'message' => '创建支付单成功']);
         } catch (\Exception $e) {
             DB::rollBack();
 

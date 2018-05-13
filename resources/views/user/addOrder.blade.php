@@ -125,6 +125,22 @@
             index = layer.load(1, {
                 shade: [0.7,'#CCC']
             });
+            $.extend({
+                StandardPost:function(url,args){
+                    console.log(url);
+                    var form = $("<form method='post'></form>"),
+                        input;
+                    form.attr({"action":url});
+                    $.each(args,function(key,value){
+                        input = $("<input type='hidden'>");
+                        input.attr({"name":key});
+                        input.val(value);
+                        form.append(input);
+                    });
+                    $(document.body).append(form);
+                    form.submit();
+                }
+            });
 
             $.ajax({
                 type: "POST",
@@ -140,7 +156,8 @@
                 success: function (ret) {
                     layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('payment')}}' + "/" + ret.data;
+                            $.StandardPost('https://www.paypayzhu.com/api/pay', ret.data);
+                            //window.location.href = '{{url('payment')}}' + "/" + ret.data;
                         } else {
                             layer.close(index);
                         }

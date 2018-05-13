@@ -30,21 +30,23 @@ class SubscribeController extends Controller
     // 获取订阅信息
     public function index(Request $request, $code)
     {
+        
         if (empty($code)) {
             return Redirect::to('login');
         }
-
+       
         // 校验合法性
         $subscribe = UserSubscribe::query()->with('user')->where('code', $code)->where('status', 1)->first();
         if (empty($subscribe)) {
             exit($this->noneNode());
         }
-
+      
         $user = User::query()->where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
         if (empty($user)) {
             exit($this->noneNode());
         }
 
+       
         // 更新访问次数
         $subscribe->increment('times', 1);
 
@@ -56,7 +58,8 @@ class SubscribeController extends Controller
         if (empty($userLabelIds)) {
             exit($this->noneNode());
         }
-
+        var_dump($userLabelIds);
+        exit;
         $nodeList = SsNode::query()->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
             ->where('ss_node.status', 1)
             ->whereIn('ss_node_label.label_id', $userLabelIds)
@@ -66,7 +69,7 @@ class SubscribeController extends Controller
         if (empty($nodeList)) {
             exit($this->noneNode());
         }
-
+       
         // 打乱数组
         shuffle($nodeList);
 
@@ -98,7 +101,6 @@ class SubscribeController extends Controller
             $ssr_str = base64url_encode($ssr_str);
             $scheme .= 'ssr://' . $ssr_str . "\n";
         }
-
         exit(base64url_encode($scheme));
     }
 

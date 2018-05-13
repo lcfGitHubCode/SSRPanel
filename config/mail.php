@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => 'smtp.exmail.qq.com',
+    'host' => 'smtp.qq.com',
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => 'xxx@qq.com',
-        'name' => '重置密码',
+        'address' => '709952810@qq.com',
+        'name' => 'ssr',
     ],
 
     /*
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => 'xxx@qq.com',
+    'username' => '709952810@qq.com',
 
-    'password' => 'xxxxxx',
+    'password' => 'brctoyddklgkbdgc',
 
     /*
     |--------------------------------------------------------------------------

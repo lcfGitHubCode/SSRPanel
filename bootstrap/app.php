@@ -52,4 +52,7 @@ $app->singleton(
 |
 */
 
+//$app->register(Ignited\LaravelOmnipay\LumenOmnipayServiceProvider::class);
+//$app->configure('laravel-omnipay');
+
 return $app;

@@ -166,6 +166,7 @@ return [
         //Illuminate\Translation\TranslationServiceProvider::class, // 弃用自带多国语言包功能
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        
 
         /*
          * Package Service Providers...
@@ -187,6 +188,7 @@ return [
         Jenssegers\Agent\AgentServiceProvider::class,
         Overtrue\LaravelLang\TranslationServiceProvider::class,
         Mews\Purifier\PurifierServiceProvider::class,
+        Ignited\LaravelOmnipay\LaravelOmnipayServiceProvider::class,
 
     ],
 
@@ -240,7 +242,7 @@ return [
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Purifier' => Mews\Purifier\Facades\Purifier::class,
-
+        'Omnipay' => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class,
     ],
 
 ];

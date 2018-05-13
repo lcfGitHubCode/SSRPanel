@@ -577,9 +577,10 @@
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <div class="col-md-12">
-                                                            <div class="alert alert-info" style="text-align: center;">
+                                                            <!-- <div class="alert alert-info" style="text-align: center;">
                                                                 请在<a href="https://console.youzanyun.com/login" target="_blank">有赞云</a>后台设置应用的推送网址为：{{$website_url . '/api/yzy'}}
-                                                            </div>
+                                                                </div>
+                                                            -->
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -587,11 +588,11 @@
                                                             <label for="is_youzan" class="col-md-3 control-label">本功能</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_youzan) checked @endif id="is_youzan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 请先到<a href="https://console.youzanyun.com/dashboard">有赞云</a>申请client_id和client_secret并绑定店铺 </span>
+                                                                <span class="help-block"> 请先到<a href="https://console.youzanyun.com/dashboard">paypayzhu</a>申请</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="kdt_id" class="col-md-3 control-label">kdt_id</label>
+                                                            <label for="kdt_id" class="col-md-3 control-label">回调地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="kdt_id" value="{{$kdt_id}}" id="kdt_id" />
@@ -599,13 +600,13 @@
                                                                         <button class="btn btn-success" type="button" onclick="setKdtId()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 即：授权店铺id </span>
+                                                                <span class="help-block"> 即：用户支付成功后的跳转页面 </span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="youzan_client_id" class="col-md-3 control-label">client_id</label>
+                                                            <label for="youzan_client_id" class="col-md-3 control-label">api_user</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="youzan_client_id" value="{{$youzan_client_id}}" id="youzan_client_id" />
@@ -616,7 +617,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="youzan_client_secret" class="col-md-3 control-label">client_secret</label>
+                                                            <label for="youzan_client_secret" class="col-md-3 control-label">api_key</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="youzan_client_secret" value="{{$youzan_client_secret}}" id="youzan_client_secret" />

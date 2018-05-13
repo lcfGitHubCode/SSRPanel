@@ -12,3 +12,4 @@ Homestead.yaml
 npm-debug.log
 .DS_Store
 .phpstorm.meta.php
+/config/mail.php
