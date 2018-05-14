@@ -188,7 +188,6 @@ return [
         Jenssegers\Agent\AgentServiceProvider::class,
         Overtrue\LaravelLang\TranslationServiceProvider::class,
         Mews\Purifier\PurifierServiceProvider::class,
-        Ignited\LaravelOmnipay\LaravelOmnipayServiceProvider::class,
 
     ],
 
