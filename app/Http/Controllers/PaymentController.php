@@ -82,16 +82,7 @@ class PaymentController extends Controller
             $order->is_expire = 0;
             $order->pay_way = 2;
             $order->status = 0;
-            //$order->save();
-
-            // 生成支付单
-            // $yzy = new Yzy();
-            // $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
-            // if (isset($result['error_response'])) {
-            //     Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
-
-            //     throw new \Exception($result['error_response']['msg']);
-            // }
+            $order->save();
 
             $payment = new Payment();
             $payment->sn = $sn;
@@ -104,9 +95,9 @@ class PaymentController extends Controller
             // $payment->qr_url = $result['response']['qr_url'];
             // $payment->qr_code = $result['response']['qr_code'];
             $payment->status = 0;
-            //$payment->save();
+            $payment->save();
 
-            //DB::commit();
+            DB::commit();
 
             // 从网页传入 price 
             $price = $goods->price;
