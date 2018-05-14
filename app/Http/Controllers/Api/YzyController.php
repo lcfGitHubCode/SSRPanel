@@ -116,7 +116,6 @@ class YzyController extends Controller
         exit();
 
         /*
-
         // 判断消息是否合法
         $msg = $data['msg'];
         $sign_string = self::$config['youzan_client_id'] . "" . $msg . "" . self::$config['youzan_client_secret'];
@@ -301,8 +300,6 @@ class YzyController extends Controller
                 exit();
             }
         }*/
-
-        exit();
     }
 
     public function show(Request $request)
