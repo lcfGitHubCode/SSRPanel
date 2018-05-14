@@ -111,8 +111,7 @@ class YzyController extends Controller
 
             Log::info('【有赞云】更新支付单和订单异常：' . $e->getMessage());
         }
-
-        exit();
+        return redirect("/user/orderList");
 
         /*
         // 判断消息是否合法
