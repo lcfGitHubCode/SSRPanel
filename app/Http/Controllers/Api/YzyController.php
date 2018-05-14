@@ -42,17 +42,16 @@ class YzyController extends Controller
     {
         \Log::info("YZY-POST:" . var_export($request->all()));
 
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
+        $data = $request->all();
         if (!$data) {
             Log::info('YZY-POST:回调数据无法解析，可能是非法请求');
             exit();
         }
 
         //验证签名合法性
-        if ($data['signature']) {
+        //if ($data['signature']) {
             //$signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
-        }
+        //}
 
         $payment = Payment::query()->where('oid', $data['order_id'])->first();
         if (!$payment) {
