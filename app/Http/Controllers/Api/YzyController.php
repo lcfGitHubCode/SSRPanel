@@ -54,7 +54,7 @@ class YzyController extends Controller
             //$signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
         }
 
-        $payment = Payment::query()->where('qr_id', $data['order_id'])->first();
+        $payment = Payment::query()->where('oid', $data['order_id'])->first();
         if (!$payment) {
             Log::info('订单不存在');
             exit();
