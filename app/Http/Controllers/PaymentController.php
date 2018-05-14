@@ -109,7 +109,7 @@ class PaymentController extends Controller
             //DB::commit();
 
             // 从网页传入 price 
-            $price = $price;
+            $price = $goods->price;
             // 从网页传入 type [1: 微信, 2: 支付宝]
             $type = 1;
             // 填写 api_user

@@ -49,8 +49,73 @@ class YzyController extends Controller
             exit();
         }
 
-        var_dump($data);
+        //验证签名合法性
+        if ($data['signature']) {
+            //$signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
+        }
+
+        $payment = Payment::query()->where('qr_id', $data['order_id'])->first();
+        if (!$payment) {
+            Log::info('订单不存在');
+            exit();
+        }
+
+        // 处理订单
+        DB::beginTransaction();
+        try {
+            // 更新支付单
+            $payment->pay_way = 1; // 默认微信
+            $payment->status = 1;
+            $payment->save();
+
+            // 更新订单
+            $order = Order::query()->with(['user'])->where('oid', $payment->oid)->first();
+            $order->status = 2;
+            $order->save();
+
+
+            // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
+            $goods = Goods::query()->where('id', $order->goods_id)->first();
+            if ($goods->type == 2) {
+                $existOrderList = Order::query()
+                    ->with(['goods'])
+                    ->whereHas('goods', function ($q) {
+                        $q->where('type', 2);
+                    })
+                    ->where('user_id', $order->user_id)
+                    ->where('oid', '<>', $order->oid)
+                    ->where('is_expire', 0)
+                    ->get();
+
+                foreach ($existOrderList as $vo) {
+                    Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                    User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                }
+            }
+
+            // 把商品的流量加到账号上
+            User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
+
+            // 套餐就改流量重置日，流量包不改
+            if ($goods->type == 2) {
+                // 将商品的有效期和流量自动重置日期加到账号上
+                $traffic_reset_day = in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'));
+                User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($order->user->expire_time))), 'enable' => 1]);
+            } else {
+                // 将商品的有效期和流量自动重置日期加到账号上
+                User::query()->where('id', $order->user_id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::info('【有赞云】更新支付单和订单异常：' . $e->getMessage());
+        }
+
         exit();
+
+        /*
 
         // 判断消息是否合法
         $msg = $data['msg'];
@@ -235,7 +300,7 @@ class YzyController extends Controller
                 Log::info('【有赞云】超时未支付自动支付' . urldecode($data['msg']));
                 exit();
             }
-        }
+        }*/
 
         exit();
     }
