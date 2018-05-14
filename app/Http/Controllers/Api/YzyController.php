@@ -48,14 +48,25 @@ class YzyController extends Controller
             exit();
         }
 
-        //验证签名合法性
-        //if ($data['signature']) {
-            //$signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
-        //}
+        if (!isset($data['order_id'])) {
+            Log::info('YZY-POST:回调order_id数据无法解析，可能是非法请求');
+            exit();
+        }
 
         $payment = Payment::query()->where('oid', $data['order_id'])->first();
         if (!$payment) {
             Log::info('订单不存在');
+            exit();
+        }
+
+         //验证签名合法性
+        if ($data['signature']) {
+            if ($payment->qr_code != $data['signature']) {
+                Log::info('签名错误，可能是非法请求');
+                exit();
+            }
+        } else {
+            Log::info('YZY-POST:回调signature数据无法解析，可能是非法请求');
             exit();
         }
 

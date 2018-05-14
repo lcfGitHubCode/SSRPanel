@@ -84,21 +84,6 @@ class PaymentController extends Controller
             $order->status = 0;
             $order->save();
 
-            $payment = new Payment();
-            $payment->sn = $sn;
-            $payment->user_id = $user['id'];
-            $payment->oid = $order->oid;
-            $payment->order_sn = $orderSn;
-            $payment->pay_way = 1;
-            $payment->amount = $amount;
-            // $payment->qr_id = $result['response']['qr_id'];
-            // $payment->qr_url = $result['response']['qr_url'];
-            // $payment->qr_code = $result['response']['qr_code'];
-            $payment->status = 0;
-            $payment->save();
-
-            DB::commit();
-
             // 从网页传入 price 
             $price = $goods->price;
             // 从网页传入 type [1: 微信, 2: 支付宝]
@@ -116,6 +101,21 @@ class PaymentController extends Controller
 
             // 签名 
             $signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
+
+
+            $payment = new Payment();
+            $payment->sn = $sn;
+            $payment->user_id = $user['id'];
+            $payment->oid = $order->oid;
+            $payment->order_sn = $orderSn;
+            $payment->pay_way = 1;
+            $payment->amount = $amount;
+            //存放sign值
+            $payment->qr_code = $signature;
+            $payment->status = 0;
+            $payment->save();
+
+            DB::commit();
 
             $ret['api_user'] = $api_user;
             $ret['price'] = $price;
