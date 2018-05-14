@@ -117,7 +117,7 @@ class PaymentController extends Controller
             // 填写 api_key 
             $api_key = self::$config['youzan_client_secret'];
             // 您系统内部生成的订单号, 每创建一个订单, 此订单号需要+1
-            $order_id = $order;
+            $order_id = $order->oid;
             // 您自定义的用户信息, 方便在后台对账, 排查订单是由哪个用户发起的, 强烈建议加上
             $order_info = $order->user_id;
             // 用户支付成功之后, 跳转到的页面
