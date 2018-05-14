@@ -242,7 +242,6 @@ return [
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Purifier' => Mews\Purifier\Facades\Purifier::class,
-        'Omnipay' => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class,
     ],
 
 ];
