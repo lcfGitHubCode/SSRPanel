@@ -51,7 +51,7 @@
                                                     @elseif($order->status == 0)
                                                         <a href="javascript:;" class="btn btn-sm dark disabled"> {{trans('home.invoice_table_wait_payment')}} </a>
                                                         @if(!empty($order->payment))
-                                                            <a href="{{url('payment/' . $order->payment->sn)}}" target="_self" class="btn btn-sm red">{{trans('home.pay')}}</a>
+                                                            <a onclick="onlinePay()", class="btn btn-sm red">{{trans('home.pay')}}</a>
                                                         @endif
                                                     @elseif($order->status == 1)
                                                         <a href="javascript:;" class="btn btn-sm dark disabled"> {{trans('home.invoice_table_wait_confirm')}} </a>
@@ -88,6 +88,54 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-        //
+        // 在线支付
+        function onlinePay() {
+            var order_id = '{{$order->oid}}';
+            index = layer.load(1, {
+                shade: [0.7,'#CCC']
+            });
+            $.extend({
+                StandardPost:function(url,args){
+                    console.log(url);
+                    var form = $("<form method='post'></form>"),
+                        input;
+                    form.attr({"action":url});
+                    $.each(args,function(key,value){
+                        input = $("<input type='hidden'>");
+                        input.attr({"name":key});
+                        input.val(value);
+                        form.append(input);
+                    });
+                    $(document.body).append(form);
+                    form.submit();
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "{{url('payment/create')}}",
+                async: false,
+                data: {order_id:order_id},
+                dataType: 'json',
+                beforeSend: function () {
+                    index = layer.load(1, {
+                        shade: [0.7,'#CCC']
+                    });
+                },
+                success: function (ret) {
+                    layer.msg(ret.message, {time:1300}, function() {
+                        if (ret.status == 'success') {
+                            $.StandardPost('https://www.paypayzhu.com/api/pay', ret.data);
+                            //window.location.href = '{{url('payment')}}' + "/" + ret.data;
+                        } else {
+                            layer.close(index);
+                        }
+                    });
+                }
+                //complete: function () {
+                    //
+                //}
+            });
+        }
     </script>
 @endsection

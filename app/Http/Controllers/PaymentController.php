@@ -25,6 +25,40 @@ class PaymentController extends Controller
     // 创建支付单
     public function create(Request $request)
     {
+
+        $order_id = intval($request->get('order_id'));
+        if (!empty($order_id)) {
+
+            // 判断是否存在同个商品的未支付订单
+            $order = Order::query()->where('order', $order_id)->first();
+            if ($order) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：未找到支付订单']);
+            }
+            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+            if (!$goods) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品或服务已下架']);
+            }
+
+            // 从网页传入 price 
+            $price = $goods->price;
+            // 从网页传入 type [1: 微信, 2: 支付宝]
+            $type = 1;
+            // 填写 api_user
+            $api_user = self::$config['youzan_client_id'];
+            // 填写 api_key 
+            $api_key = self::$config['youzan_client_secret'];
+            // 您系统内部生成的订单号, 每创建一个订单, 此订单号需要+1
+            $order_id = $order->oid;
+            // 您自定义的用户信息, 方便在后台对账, 排查订单是由哪个用户发起的, 强烈建议加上
+            $order_info = $order->user_id;
+            // 用户支付成功之后, 跳转到的页面
+            $redirect = self::$config['kdt_id'];
+
+            // 签名 
+            $signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
+            return Response::json(['status' => 'success', 'data' => $ret, 'message' => '创建支付单成功']);
+        }
+
         $goods_id = intval($request->get('goods_id'));
         $coupon_sn = $request->get('coupon_sn');
         $user = $request->session()->get('user');
