@@ -27,11 +27,10 @@ class PaymentController extends Controller
     {
 
 	$order_id = intval($request->get('order_id'));
-        //var_dump($order_id);exit();
-        if (!empty($order_id)) {
+	if (!empty($order_id)) {
 
             // 判断是否存在同个商品的未支付订单
-            $order = Order::query()->where('oid', $order_id)->first();
+            $order = Order::query()->where('oid', strval($order_id))->first();
             if (!$order) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：未找到支付订单']);
             }
@@ -63,6 +62,7 @@ class PaymentController extends Controller
             $ret['order_id'] = $order_id;
             $ret['order_info'] =$order_info;
             $ret['signature'] = $signature;
+            log::info("待付". json_encode($ret));
             // 签名 
             return Response::json(['status' => 'success', 'data' => $ret, 'message' => '支付中……']);
         }
@@ -166,7 +166,8 @@ class PaymentController extends Controller
             $ret['order_id'] = $order_id;
             $ret['order_info'] =$order_info;
             $ret['signature'] = $signature;
-            return Response::json(['status' => 'success', 'data' => $ret, 'message' => '创建支付单成功']);
+            log::info(json_encode($ret));
+	    return Response::json(['status' => 'success', 'data' => $ret, 'message' => '创建支付单成功']);
         } catch (\Exception $e) {
             DB::rollBack();
 

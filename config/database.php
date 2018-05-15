@@ -45,7 +45,7 @@ return [
             'port' => '3306',
             'database' => 'ssrpanel',
             'username' => 'root',
-            'password' => 'root',
+            'password' => 'Mysqlpassw0rd.',
             'unix_socket' => '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

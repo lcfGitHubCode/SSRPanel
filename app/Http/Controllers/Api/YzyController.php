@@ -59,11 +59,15 @@ class YzyController extends Controller
             Log::info('订单不存在');
             exit();
         }
-
+	
          //验证签名合法性
-        if ($data['signature']) {
-            if ($payment->qr_code != $data['signature']) {
-                Log::info('签名错误，可能是非法请求');
+	log::info(self::$config['youzan_client_secret'] . self::$config['youzan_client_id']. $data['order_id']. $data['order_info']. $data['ppz_order_id']. $data['price']. $data['real_price']);
+	$signature = md5(self::$config['youzan_client_secret']. $data['order_id']. $data['order_info']. $data['ppz_order_id']. $data['price']. $data['real_price']);
+        
+        Log::info($signature);
+	if ($data['signature']) {
+            if ($signature != $data['signature']) {
+                Log::info($data['signature'] . '签名错误，可能是非法请求');
                 exit();
             }
         } else {

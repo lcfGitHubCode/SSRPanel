@@ -51,7 +51,7 @@
                                                     @elseif($order->status == 0)
                                                         <a href="javascript:;" class="btn btn-sm dark disabled"> {{trans('home.invoice_table_wait_payment')}} </a>
                                                         @if(!empty($order->payment))
-                                                            <a onclick="onlinePay()", class="btn btn-sm red">{{trans('home.pay')}}</a>
+                                                            <a onclick="onlinePay({{$order->oid}})", class="btn btn-sm red">{{trans('home.pay')}}</a>
                                                         @endif
                                                     @elseif($order->status == 1)
                                                         <a href="javascript:;" class="btn btn-sm dark disabled"> {{trans('home.invoice_table_wait_confirm')}} </a>
@@ -89,8 +89,7 @@
 @section('script')
     <script type="text/javascript">
         // 在线支付
-        function onlinePay() {
-            var order_id = '{{$order->oid}}';
+        function onlinePay(order_id) {
             $.extend({
                 StandardPost:function(url,args){
                     console.log(url);
@@ -107,7 +106,6 @@
                     form.submit();
                 }
             });
-
             $.ajax({
                 type: "POST",
                 url: "{{url('payment/create')}}",
@@ -117,7 +115,8 @@
                 beforeSend: function () {
                 },
                 success: function (ret) {
-                        if (ret.status == 'success') {
+	    		console.log("Sample log");
+			if (ret.status == 'success') {
                             $.StandardPost('https://www.paypayzhu.com/api/pay', ret.data);
                             //window.location.href = '{{url('payment')}}' + "/" + ret.data;
                         }
