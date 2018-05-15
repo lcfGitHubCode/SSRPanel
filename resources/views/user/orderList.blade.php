@@ -91,9 +91,6 @@
         // 在线支付
         function onlinePay() {
             var order_id = '{{$order->oid}}';
-            index = layer.load(1, {
-                shade: [0.7,'#CCC']
-            });
             $.extend({
                 StandardPost:function(url,args){
                     console.log(url);
@@ -118,24 +115,14 @@
                 data: {order_id:order_id},
                 dataType: 'json',
                 beforeSend: function () {
-                    index = layer.load(1, {
-                        shade: [0.7,'#CCC']
-                    });
                 },
                 success: function (ret) {
-                    layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
                             $.StandardPost('https://www.paypayzhu.com/api/pay', ret.data);
                             //window.location.href = '{{url('payment')}}' + "/" + ret.data;
-                        } else {
-                            layer.close(index);
                         }
-                    });
-                }
-                //complete: function () {
-                    //
-                //}
-            });
-        }
+		}
+           });
+      }
     </script>
 @endsection

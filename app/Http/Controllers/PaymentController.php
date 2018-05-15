@@ -26,15 +26,16 @@ class PaymentController extends Controller
     public function create(Request $request)
     {
 
-        $order_id = intval($request->get('order_id'));
+	$order_id = intval($request->get('order_id'));
+        //var_dump($order_id);exit();
         if (!empty($order_id)) {
 
             // 判断是否存在同个商品的未支付订单
-            $order = Order::query()->where('order', $order_id)->first();
-            if ($order) {
+            $order = Order::query()->where('oid', $order_id)->first();
+            if (!$order) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：未找到支付订单']);
             }
-            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->where('id', $order->goods_id)->where('status', 1)->first();
             if (!$goods) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品或服务已下架']);
             }
@@ -53,10 +54,17 @@ class PaymentController extends Controller
             $order_info = $order->user_id;
             // 用户支付成功之后, 跳转到的页面
             $redirect = self::$config['kdt_id'];
-
-            // 签名 
             $signature = md5($api_key. $api_user. $order_id. $order_info. $price. $redirect. $type);
-            return Response::json(['status' => 'success', 'data' => $ret, 'message' => '创建支付单成功']);
+	    
+	    $ret['api_user'] = $api_user;
+            $ret['price'] = $price;
+            $ret['type'] = $type;
+            $ret['redirect'] = $redirect;
+            $ret['order_id'] = $order_id;
+            $ret['order_info'] =$order_info;
+            $ret['signature'] = $signature;
+            // 签名 
+            return Response::json(['status' => 'success', 'data' => $ret, 'message' => '支付中……']);
         }
 
         $goods_id = intval($request->get('goods_id'));

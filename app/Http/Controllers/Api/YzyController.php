@@ -47,6 +47,7 @@ class YzyController extends Controller
             Log::info('YZY-POST:回调数据无法解析，可能是非法请求');
             exit();
         }
+        \Log::info("YZY-POST:" . json_encode($data) );
 
         if (!isset($data['order_id'])) {
             Log::info('YZY-POST:回调order_id数据无法解析，可能是非法请求');
