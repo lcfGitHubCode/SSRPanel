@@ -58,8 +58,7 @@ class SubscribeController extends Controller
         if (empty($userLabelIds)) {
             exit($this->noneNode());
         }
-        var_dump($userLabelIds);
-        exit;
+
         $nodeList = SsNode::query()->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
             ->where('ss_node.status', 1)
             ->whereIn('ss_node_label.label_id', $userLabelIds)
