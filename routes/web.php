@@ -100,7 +100,7 @@ Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::get('user/subscribe', 'UserController@subscribe'); // 节点订阅
     Route::post('user/exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
     Route::get('user/goodsList', 'UserController@goodsList'); // 商品列表
-    //Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志
+    Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志
     Route::get('user/ticketList', 'UserController@ticketList'); // 工单
     Route::post('user/addTicket', 'UserController@addTicket'); // 快速添加工单
     Route::any('user/replyTicket', 'UserController@replyTicket'); // 回复工单
